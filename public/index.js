@@ -1,3 +1,4 @@
+/* let's go! */
 
 const userHandle = document.querySelector("#github-user-handle");
 const userAvatar = document.querySelector("#github-user-avatar");
@@ -9,43 +10,49 @@ const repoCreated = document.querySelector("#github-repo-created");
 const repoOpenIssues = document.querySelector("#github-repo-open-issues");
 const repoWatchers = document.querySelector("#github-repo-watchers");
 const repoContributors = document.querySelector("#github-repo-contributors");
+const input = document.getElementById('search');
+const submitBtn = document.getElementById('submit');
 
-const url = "https://api.github.com/users/Mu7ammadAbed";
-const repoLink = "https://api.github.com/users/Mu7ammadAbed/repos";
-const Contributorss =
-  "https://api.github.com/repos/Mu7ammadAbed/art-gallery/contributors";
+//create fetch to store xml
+const fetch = (method,url,cb)=>{
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState===4){
+            if(xhr.status===200){
+                cb(JSON.parse(xhr.responseText))
+            }
+        }
+    }
+    xhr.open(method,url);
+    xhr.send();
+}
+// to show my profile in github when no profile name add
+window.onload = () => {
+    input.value = `braaAwni`;
+    submitBtn.click();
+};
+// when click button search 
+submitBtn.addEventListener("click",()=>{
+    const userName = input.value;
+    const url = `https://api.github.com/users/${userName}`
+    const repoLink = `https://api.github.com/users/${userName}/repos`
+const Contributorss =`https://api.github.com/repos/${userName}/art-gallery/contributors`
 
-const xhr = new XMLHttpRequest();
-xhr.onreadystatechange = function () {
-  if (xhr.readyState == 4 && xhr.status == 200) {
-    const apiObj = JSON.parse(xhr.responseText);
-    //console.log(apiObj);
+
+//xml1
+const UserInvo =(apiObj) =>{
     userHandle.textContent = apiObj.name;
     userAvatar.src = apiObj.avatar_url;
 
     userRepos.textContent = apiObj.public_repos;
-  }
-};
-xhr.open("GET", url, true);
-xhr.send();
+}
 
-const xhr2 = new XMLHttpRequest();
-xhr2.onreadystatechange = function () {
-  if (xhr2.readyState == 4 && xhr2.status == 200) {
-    const apiObj2 = JSON.parse(xhr2.responseText);
-   // console.log(apiObj2);
+//xml2
+const userRepo = (apiObj2) =>{
     reporName.textContent = apiObj2[3].full_name;
     repoOpenIssues.textContent = apiObj2[3].open_issues_count;
     repoWatchers.textContent = apiObj2[3].watchers_count;
     repoCreated.textContent = apiObj2[3].pushed_at;
-
-    // apiObj2.forEach((element) => {
-    //   userLanguages.textContent = element.language;
-    //   userStars.textContent = element.stargazers_count;
-
-    //   console.log(element.stargazers_count);
-    //   console.log(element.language);
-    // });
 
     let languages = [];
     let stars = [];
@@ -56,21 +63,16 @@ xhr2.onreadystatechange = function () {
     }
     userLanguages.textContent += languages.join(", ");
     userStars.textContent += stars.join(", ");
+}
 
-
-  }
-};
-xhr2.open("GET", repoLink, true);
-xhr2.send();
-
-const xhr3 = new XMLHttpRequest();
-xhr3.onreadystatechange = function () {
-  if (xhr3.readyState == 4 && xhr3.status == 200) {
-    const apiObj3 = JSON.parse(xhr3.responseText);
-    //console.log(apiObj3);
-
+//xml3
+const userCont = (apiObj3) =>{
     repoContributors.textContent = apiObj3[0].login;
-  }
-};
-xhr3.open("GET", Contributorss, true);
-xhr3.send();
+}
+
+
+fetch('GET' , url ,UserInvo)
+fetch('GET' , repoLink , userRepo)
+fetch('GET' , Contributorss , userCont)
+
+})
