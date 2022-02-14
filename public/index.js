@@ -40,7 +40,7 @@ const Contributorss =`https://api.github.com/repos/${userName}/art-gallery/contr
 
 
 //xml1
-const UserInvo =(apiObj) =>{
+const UserInfo =(apiObj) =>{
     userHandle.textContent = apiObj.name;
     userAvatar.src = apiObj.avatar_url;
 
@@ -71,7 +71,7 @@ const userCont = (apiObj3) =>{
 }
 
 
-fetch('GET' , url ,UserInvo)
+fetch('GET' , url ,UserInfo)
 fetch('GET' , repoLink , userRepo)
 fetch('GET' , Contributorss , userCont)
 
