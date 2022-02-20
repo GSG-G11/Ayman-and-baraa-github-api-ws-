@@ -12,6 +12,7 @@ const repoWatchers = document.querySelector("#github-repo-watchers");
 const repoContributors = document.querySelector("#github-repo-contributors");
 const input = document.getElementById('search');
 const submitBtn = document.getElementById('submit');
+const video = document.querySelector("#video");
 
 //create fetch to store xml
 const fetch = (method,url,cb)=>{
@@ -28,51 +29,45 @@ const fetch = (method,url,cb)=>{
 }
 // to show my profile in github when no profile name add
 window.onload = () => {
-    input.value = `braaAwni`;
+    input.value = `naruto`;
     submitBtn.click();
 };
 // when click button search 
 submitBtn.addEventListener("click",()=>{
     const userName = input.value;
-    const url = `https://api.github.com/users/${userName}`
-    const repoLink = `https://api.github.com/users/${userName}/repos`
-const Contributorss =`https://api.github.com/repos/${userName}/art-gallery/contributors`
+    const url = `https://kitsu.io/api/edge/anime?filter%5Btext%5D=${userName}`
+   const repoLink = `https://api.giphy.com/v1/gifs/search?api_key=BEhmVfKdPW8J3qZKPhXMCyNszDlbEci4&q=${userName}&limit=25&offset=0&rating=g&lang=en`
 
+   
+// const Contributorss =`https://api.github.com/repos/${userName}/art-gallery/contributors`
 
 //xml1
 const UserInfo =(apiObj) =>{
-    userHandle.textContent = apiObj.name;
-    userAvatar.src = apiObj.avatar_url;
-
-    userRepos.textContent = apiObj.public_repos;
+   // console.log(apiObj.data[0].fact);
+  
+     userAvatar.src=apiObj.data[0].attributes.posterImage.original;
+   userHandle.textContent =apiObj.data[0].attributes.titles.en;
+   userRepos.textContent = apiObj.data[0].attributes.synopsis;
+//console.log(apiObj.data[0].attributes.posterImage.original);
 }
 
 //xml2
 const userRepo = (apiObj2) =>{
-    reporName.textContent = apiObj2[3].full_name;
-    repoOpenIssues.textContent = apiObj2[3].open_issues_count;
-    repoWatchers.textContent = apiObj2[3].watchers_count;
-    repoCreated.textContent = apiObj2[3].pushed_at;
+    video.src =  apiObj2.data[0].url;
+    console.log(apiObj2.data[0]);
+    // userHandle.textContent = apiObj2[0].anime;
+    // userRepos.textContent =apiObj2[0].quote;
 
-    let languages = [];
-    let stars = [];
-    for (let i = 0; i < apiObj2.length; i++) {
-      languages.push(apiObj2[i].language);
-      stars.push(apiObj2[i].stargazers_count);
-
-    }
-    userLanguages.textContent += languages.join(", ");
-    userStars.textContent += stars.join(", ");
 }
 
 //xml3
-const userCont = (apiObj3) =>{
-    repoContributors.textContent = apiObj3[0].login;
-}
+// const userCont = (apiObj3) =>{
+//     repoContributors.textContent = apiObj3[0].login;
+// }
 
 
 fetch('GET' , url ,UserInfo)
 fetch('GET' , repoLink , userRepo)
-fetch('GET' , Contributorss , userCont)
+// fetch('GET' , Contributorss , userCont)
 
 })
